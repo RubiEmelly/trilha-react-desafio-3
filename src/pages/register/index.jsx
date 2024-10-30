@@ -1,13 +1,13 @@
-import { useNavigate, Link } from "react-router-dom"; // Importando Link
-import { MdEmail, MdLock } from 'react-icons/md';
+import { useNavigate } from "react-router-dom";
+import { Container, Title, Column, TitleRegister, SubtitleRegister, EsqueciText, CriarText, Row, Wrapper, InformationRegister } from './styles';
+import { MdEmail, MdLock, MdPeople } from 'react-icons/md';
 import { Button } from '../../components/Button';
 import { Header } from '../../components/Header';
 import { Input } from '../../components/Input';
 import { api } from '../../services/api';
 import { useForm } from "react-hook-form";
-import { Container, Title, Column, TitleLogin, SubtitleLogin, EsqueciText, CriarText, Row, Wrapper } from './styles';
 
-const Login = () => {
+const Register = () => {
     const navigate = useNavigate();
     const { control, handleSubmit, formState: { errors } } = useForm({
         reValidateMode: 'onChange',
@@ -17,15 +17,15 @@ const Login = () => {
     const onSubmit = async (formData) => {
         try {
             const { data } = await api.get(`/users?email=${formData.email}&senha=${formData.senha}`);
-            
+
             if (data.length && data[0].id) {
-                navigate('/feed'); 
+                navigate('/feed');
                 return;
             }
 
             alert('Usuário ou senha inválido');
         } catch (e) {
-            // TODO: HOUVE UM ERRO
+            alert('Ocorreu um erro ao tentar realizar o registro. Tente novamente.');
         }
     };
 
@@ -34,31 +34,34 @@ const Login = () => {
             <Header />
             <Container>
                 <Column>
-                    <Title>A plataforma para você aprender com experts, dominar as principais tecnologias
-                     e entrar mais rápido nas empresas mais desejadas.</Title>
+                    <Title>A plataforma para você aprender com experts, dominar as principais tecnologias e entrar mais rápido nas empresas mais desejadas.</Title>
                 </Column>
                 <Column>
+                    <TitleRegister>Comece agora grátis</TitleRegister>
                     <Wrapper>
-                        <TitleLogin>Faça seu cadastro</TitleLogin>
-                        <SubtitleLogin>Faça seu login e make the change._</SubtitleLogin>
+                        <SubtitleRegister>Crie sua conta e make the change._</SubtitleRegister>
                         <form onSubmit={handleSubmit(onSubmit)}>
+                            <Input placeholder="Nome Completo" leftIcon={<MdPeople />} name="name" control={control} />
+                            {errors.name && <span>Nome Completo é obrigatório</span>}
                             <Input placeholder="E-mail" leftIcon={<MdEmail />} name="email" control={control} />
                             {errors.email && <span>E-mail é obrigatório</span>}
                             <Input type="password" placeholder="Senha" leftIcon={<MdLock />} name="senha" control={control} />
                             {errors.senha && <span>Senha é obrigatório</span>}
-                            <Button title="Entrar" variant="secondary" type="submit"/>
+                            <Button title="Criar minha conta" variant="secondary" type="submit" />
                         </form>
+                        <InformationRegister>
+                            <br />
+                            Ao clicar em "criar minha conta grátis", declaro que aceito as Políticas de Privacidade e os Termos de Uso da DIO.
+                        </InformationRegister>
                         <Row>
-                            <EsqueciText>Esqueci minha senha</EsqueciText>
-                            <Link to="/register"> {/* Link para a página de cadastro */}
-                                <CriarText>Criar Conta</CriarText>
-                            </Link>
+                            <EsqueciText>Já tenho conta.</EsqueciText>
+                            <CriarText>Fazer login</CriarText>
                         </Row>
                     </Wrapper>
                 </Column>
             </Container>
         </>
     );
-};
+}
 
-export { Login };
+export { Register };
